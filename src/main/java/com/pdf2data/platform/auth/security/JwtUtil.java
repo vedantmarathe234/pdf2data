@@ -15,7 +15,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "your_enterprise_grade_very_long_secret_key_here_pdf2data_ai";
+    private final String SECRET_KEY = "PkzwqED8FePQA4F2bQUjM5N0rRiLPwohsaIngJAqbZT";
     private final long JWT_EXPIRATION_MS = 86400000;
 
     private SecretKey getSigningKey() {
