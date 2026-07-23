@@ -36,6 +36,10 @@ public class JwtFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
+                System.out.println("========== JWT FILTER ==========");
+                System.out.println("Header : " + authHeader);
+                System.out.println("Token  : " + jwt);
+                System.out.println("Subject: " + username);
             } catch (Exception e) {
                 logger.error("JWT validation failed", e);
             }
@@ -45,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

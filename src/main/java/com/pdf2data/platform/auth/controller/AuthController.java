@@ -20,7 +20,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+
+        System.out.println("========== REGISTER API HIT ==========");
+
         String responseMessage = authService.registerUser(registrationRequest);
+
         return ResponseEntity.ok(responseMessage);
     }
 
