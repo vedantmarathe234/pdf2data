@@ -21,36 +21,91 @@ public class ChatController {
     private final ChatService chatService;
     private final UserRepository userRepository;
 
-    public ChatController(ChatService chatService, UserRepository userRepository) {
+    public ChatController(
+            ChatService chatService,
+            UserRepository userRepository
+    ) {
         this.chatService = chatService;
         this.userRepository = userRepository;
     }
 
+    /*
+     * Ask AI
+     */
     @PostMapping("/ask")
-    public ResponseEntity<?> ask(@RequestBody ChatRequest request) {
+    public ResponseEntity<?> ask(
+            @RequestBody ChatRequest request
+    ) {
+
         try {
+
             User user = currentUser();
-            ChatResponse response = chatService.ask(request.getDocumentId(), user.getId(), request.getMessage());
+
+            ChatResponse response =
+                    chatService.ask(
+                            request.getChatSessionId(),
+                            user.getId(),
+                            request.getMessage()
+                    );
+
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+
         }
+
     }
 
-    @GetMapping("/history/{documentId}")
-    public ResponseEntity<?> history(@PathVariable Long documentId) {
+    /*
+     * Chat Messages History
+     */
+    @GetMapping("/history/{chatSessionId}")
+    public ResponseEntity<?> history(
+            @PathVariable Long chatSessionId
+    ) {
+
         try {
+
             User user = currentUser();
-            List<ChatHistory> history = chatService.getHistory(documentId, user.getId());
+
+            List<ChatHistory> history =
+                    chatService.getHistory(
+                            chatSessionId,
+                            user.getId()
+                    );
+
             return ResponseEntity.ok(history);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+
         }
+
     }
 
+    /*
+     * Logged-in User
+     */
     private User currentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String email =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName();
+
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
     }
+
 }

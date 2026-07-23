@@ -16,6 +16,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class ProcessingResponse {
+    private Long chatSessionId;
     private Long documentId;
     private String fileName;
     private String documentType;

@@ -18,24 +18,49 @@ public class ProcessingController {
     private final ProcessingOrchestratorService processingOrchestratorService;
     private final UserRepository userRepository;
 
-    public ProcessingController(ProcessingOrchestratorService processingOrchestratorService,
-                                 UserRepository userRepository) {
+    public ProcessingController(
+            ProcessingOrchestratorService processingOrchestratorService,
+            UserRepository userRepository) {
+
         this.processingOrchestratorService = processingOrchestratorService;
         this.userRepository = userRepository;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
-                                     @RequestParam("prompt") String prompt) {
+    public ResponseEntity<?> upload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("prompt") String prompt,
+
+            // NEW
+            @RequestParam(value = "chatSessionId", required = false)
+            Long chatSessionId) {
+
         try {
-            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+            String email = SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getName();
+
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            ProcessingResponse response = processingOrchestratorService.process(file, prompt, user);
+            ProcessingResponse response =
+                    processingOrchestratorService.process(
+                            file,
+                            prompt,
+                            chatSessionId,
+                            user
+                    );
+
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+
         }
     }
+
 }

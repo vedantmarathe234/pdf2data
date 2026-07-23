@@ -6,12 +6,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_history")
+@Table(name = "chat_documents")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatHistory {
+public class ChatDocument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,33 +24,15 @@ public class ChatHistory {
     private Long chatSessionId;
 
     /**
-     * Document related to this message.
-     * (Can be null if the message is general chat)
+     * Uploaded Document
      */
+    @Column(nullable = false)
     private Long documentId;
-
-    /**
-     * Logged in user
-     */
-    @Column(nullable = false)
-    private Long userId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    @Column(columnDefinition = "MEDIUMTEXT", nullable = false)
-    private String message;
 
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate() {
+    public void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-
-    public enum Role {
-        USER,
-        ASSISTANT
     }
 }

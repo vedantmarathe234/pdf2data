@@ -5,11 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatResponse {
-    private Long chatSessionId;
-    private String reply;
+public class ChatDocumentResponse {
+
+    private Long documentId;
+
+    private String fileName;
+
+    private String documentType;
+
 }
